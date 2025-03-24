@@ -1,3 +1,7 @@
+//! [![Crates.io Version](https://img.shields.io/crates/v/breaking-attr)](https://crates.io/crates/breaking-attr)
+//! [![docs.rs](https://img.shields.io/docsrs/breaking-attr)](https://docs.rs/breaking-attr)
+//! [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Waridley/breaking-attr/.github%2Fworkflows%2Fci.yml)](https://github.com/Waridley/breaking-attr/actions)
+//!
 //! An attribute macro that enforces per-version invariants on items.
 //!
 //! ```
@@ -19,7 +23,7 @@
 //! # hash_impl_did_not_change()
 //! ```
 //!
-//! See the documentation on [`macro@breaking`]
+//! See the documentation on [`breaking`](`macro@breaking`)
 
 use base64::{Engine, engine::general_purpose::URL_SAFE as BASE_64};
 use proc_macro::TokenStream;

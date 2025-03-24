@@ -1,6 +1,6 @@
-![Crates.io Version](https://img.shields.io/crates/v/breaking-attr)
-![docs.rs](https://img.shields.io/docsrs/breaking-attr)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Waridley/breaking-attr/.github%2Fworkflows%2Fci.yml)
+[![Crates.io Version](https://img.shields.io/crates/v/breaking-attr)](https://crates.io/crates/breaking-attr)
+[![docs.rs](https://img.shields.io/docsrs/breaking-attr)](https://docs.rs/breaking-attr)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Waridley/breaking-attr/.github%2Fworkflows%2Fci.yml)](https://github.com/Waridley/breaking-attr/actions)
 
 
 An attribute macro to enforce per-version invariants on items.
