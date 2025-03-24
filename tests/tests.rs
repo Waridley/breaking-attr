@@ -3,6 +3,8 @@ use breaking_attr::breaking;
 #[cfg(test)]
 #[test]
 fn all_hashers() {
+    #![allow(unused)]
+
     #[breaking("oryQa81ib3SsqJDTSVv02R_SrNGRhnidqjYh8EOs0es=")]
     pub const DEFAULT: &str = "The default hasher";
 

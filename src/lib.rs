@@ -46,12 +46,12 @@ compile_error!("At least one hasher feature must be enabled");
 ///
 /// - [`blake3`] (default)
 /// - With the `sha2` dependency
-///   - [sha256](`sha2::Sha256`) (also aliased to `sha2`)
-///   - [sha224](`sha2::Sha224`)
-///   - [sha384](`sha2::Sha384`)
-///   - [sha512](`sha2::Sha512`)
-///   - [sha512_224](`sha2::Sha512_224`)
-///   - [sha512_256](`sha2::Sha512_256`)
+///   - [`sha256`](`sha2::Sha256`) (also aliased to `sha2`)
+///   - [`sha224`](`sha2::Sha224`)
+///   - [`sha384`](`sha2::Sha384`)
+///   - [`sha512`](`sha2::Sha512`)
+///   - [`sha512_224`](`sha2::Sha512_224`)
+///   - [`sha512_256`](`sha2::Sha512_256`)
 /// - [`md5`]
 ///
 /// ```
@@ -88,7 +88,7 @@ pub fn breaking(args: TokenStream, input: TokenStream) -> TokenStream {
         };
         Some(ident)
     });
-    let input_str = dbg!(input.to_string());
+    let input_str = input.to_string();
     #[cfg(not(all(feature = "blake3", feature = "sha2", feature = "md5",)))]
     let feature_error = |feature: &str| {
         let msg = format!(
