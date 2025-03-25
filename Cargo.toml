@@ -1,7 +1,7 @@
 [package]
 name = "breaking-attr"
 description = "An attribute macro that enforces per-version invariants on items."
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 homepage = "https://github.com/Waridley/breaking-attr"
 repository = "https://github.com/Waridley/breaking-attr"
