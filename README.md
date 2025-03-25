@@ -14,7 +14,7 @@ fn hash_impl_did_not_change() {
     const SEED: &str = "This value must not change between minor versions.";
 
     #[breaking("3zIKlGMq-shMmThdYSOntWhl9QCx3A23i8tnEfNPWBY=")] // defaults to `blake3`
-    const HASH: u64 = 42;
+    const HASH: u64 = 5201689092505688044;
     
     // Just for example:
     let mut hasher = std::hash::DefaultHasher::new();
