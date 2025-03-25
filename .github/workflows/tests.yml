@@ -1,0 +1,42 @@
+name: Rust Tests
+
+on:
+  push:
+  schedule:
+    - cron: '6 4 8/14 * *'
+
+jobs:
+  toolchain_tests:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        toolchain: [ nightly, beta, stable ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+
+      - name: Test ${{ matrix.toolchain }}
+        run: cargo +${{ matrix.toolchain }} test --all-features
+
+  msrv_test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: taiki-e/install-action@cargo-hack
+
+      - name: Test MSRV
+        run: cargo hack test --rust-version --all-features

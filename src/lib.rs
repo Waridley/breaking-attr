@@ -27,11 +27,11 @@
 //!
 //! See the documentation on [`breaking`](`macro@breaking`)
 
-use base64::{Engine, engine::general_purpose::URL_SAFE as BASE_64};
+use base64::{engine::general_purpose::URL_SAFE as BASE_64, Engine};
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenTree};
 use syn::__private::ToTokens;
-use syn::{Ident, LitStr, Token, punctuated::Punctuated};
+use syn::{punctuated::Punctuated, Ident, LitStr, Token};
 
 #[cfg(not(any(feature = "blake3", feature = "sha2", feature = "md5",)))]
 compile_error!("At least one hasher feature must be enabled");
