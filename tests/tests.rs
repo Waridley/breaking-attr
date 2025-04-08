@@ -36,4 +36,54 @@ fn all_hashers() {
 
     #[breaking(md5 = "63_HcFESCMbwzC0-dDXfXA==")]
     pub const MD5: &str = "md5";
+
+    {
+        #[breaking("aaB9pcdXQFFioZCKXy0aOEg7ZuXjek5CUCzh02RHqwA=")]
+        // This comment should not appear in the TokenStream
+        pub const COMMENTED: &str = "This might have a comment that shouldn't affect the hash";
+    }
+    {
+        // This hash should match the one above despite the lack of comment
+        #[breaking("aaB9pcdXQFFioZCKXy0aOEg7ZuXjek5CUCzh02RHqwA=")]
+        pub const COMMENTED: &str = "This might have a comment that shouldn't affect the hash";
+    }
+
+    {
+        #[breaking("6cZh6KDiaSfJeoXW5u-P9aH4W80nb6JK3WnouH8Ym58=")]
+        /// This doc comment should appear in the TokenStream
+        pub const DOC_COMMENTED: &str = "This has a doc comment that SHOULD affect the hash.";
+    }
+    {
+        #[breaking("spnWzg4vbjFvxbA0317-tPwQ_vgC-1TecAROamFt4Ls=")]
+        /// This is a different doc comment which should make the hash different.
+        pub const DOC_COMMENTED: &str = "This has a doc comment that SHOULD affect the hash.";
+    }
+
+    {
+        #[breaking("t57Llq4DaYqzAXp36UpbUTbflJz1QajYTOEtLULe5hA=")]
+        pub const MULTILINE_STRING: &str = "This is a
+multiline string";
+    };
+    {
+        // This hash should NOT be the same as above. Newlines in strings are significant.
+        #[breaking("AyMjo9dgtTb1Tz5kXcwGwyp6nLPCUo5SC0djYBlJ-1c=")]
+        pub const MULTILINE_STRING: &str = "This is a
+multiline
+string";
+    };
+
+    {
+        #[breaking("00RJnsBfjXxZrjOCz1NQV6iceODn8Wm8ZpoG4H8QzEk=")]
+        pub const RAW_STRING: &str = r#"This is a raw string"#;
+        #[breaking("qRYqMXh02j2-x-YNBFTjdgWkyaoaLLhIw8T58ICtDTc=")]
+        pub const DOUBLE_HASH_RAW_STRING: &str = r##"This is a raw string with a " in it"##;
+    }
+    {
+        // These hashes should be different
+        #[breaking("W75LdIPgEspahaQq296qHWe00HwewlFjKrT463guMVQ=")]
+        pub const RAW_STRING: &str = r#"This is a different raw string"#;
+        #[breaking("dI7G_TPPFLE36HUzDMR_OCsuhosi69CEz0HKglfxcjg=")]
+        pub const DOUBLE_HASH_RAW_STRING: &str =
+            r##"This is a different raw string with a " in it"##;
+    }
 }

@@ -68,12 +68,16 @@ compile_error!("At least one hasher feature must be enabled");
 /// use breaking_attr::breaking;
 ///
 /// # #[cfg(feature = "sha2")]
-/// #[breaking(sha384 = "82y9Notlejn-Nfzl4SurR3m3Uqeaqt0jmN-wGHSAjNkHeywz1zYZeUJi-5-D0wo3")]
+/// # {
+/// #[breaking(sha384 = "6N2eQw_UG4fnbtLYRDtZ_3aXlLfl88OmUBgqerMfwNYUTHmcC8FxCZsYtqVoZqPA")]
 /// const SHA_384: &str = "This string must not change without updating the hash.";
+/// # }
 ///
 /// # #[cfg(feature = "blake3")]
-/// #[breaking("IjrbZ-YsIRSb2v3ELtz-4zMqGvu5FVCkwotqCKMdhDE=")]
+/// # {
+/// #[breaking("XMhrOOD6liFkErtqTnoZnLgSKZ7DHRHKGyH4jWoHu8s=")]
 /// const DEFAULT: &str = "The default hasher is `blake3`";
+/// # }
 /// ```
 #[proc_macro_attribute]
 pub fn breaking(args: TokenStream, input: TokenStream) -> TokenStream {
@@ -98,7 +102,21 @@ pub fn breaking(args: TokenStream, input: TokenStream) -> TokenStream {
         };
         Some(ident)
     });
-    let input_str = input.to_string();
+
+    let input_str = sanitize(input.to_string());
+
+    #[cfg(feature = "print_token_stream")]
+    {
+        eprintln!(
+            "\
+TokenStream string: {:?}
+sanitized:          {:?}\
+",
+            input.to_string(),
+            crate::sanitize(input.to_string())
+        );
+    }
+
     #[cfg(not(all(feature = "blake3", feature = "sha2", feature = "md5",)))]
     let feature_error = |feature: &str| {
         let msg = format!(
@@ -161,10 +179,70 @@ pub fn breaking(args: TokenStream, input: TokenStream) -> TokenStream {
     };
     let hash = BASE_64.encode(hash);
     if hash != expected {
-        let msg = format!("hash {hash:?} doesn't match");
+        let msg = format!(
+            "\
+hash {hash:?} doesn't match.
+TokenStream string: {input_str:?}
+unsanitized:        {:?}\
+",
+            input.to_string()
+        );
         return syn::Error::new(proc_macro::Span::call_site().into(), msg)
             .into_compile_error()
             .into();
     }
     input
+}
+
+fn sanitize(s: String) -> String {
+    let mut in_quote = false;
+    let mut raw_quote_surround_stack = Vec::new();
+    let mut escaped = false;
+    s.chars()
+        .map(|c| {
+            if !in_quote {
+                if raw_quote_surround_stack.is_empty() {
+                    if c == 'r' {
+                        raw_quote_surround_stack.push(c);
+                        escaped = false;
+                        return c;
+                    }
+                } else if c == '#' {
+                    raw_quote_surround_stack.push(c);
+                    escaped = false;
+                    return c;
+                } else if c == '"' {
+                    in_quote = true;
+                    raw_quote_surround_stack.push(c);
+                    escaped = false;
+                    return c;
+                }
+            } else if c != 'r' && raw_quote_surround_stack.last() == Some(&'r') {
+                raw_quote_surround_stack.pop();
+                escaped = false;
+                return c;
+            }
+            if c == '"' {
+                if raw_quote_surround_stack.last() == Some(&'"') {
+                    raw_quote_surround_stack.pop();
+                } else if !escaped {
+                    in_quote = !in_quote;
+                }
+            }
+            if c == '#' && raw_quote_surround_stack.last() == Some(&'#') {
+                raw_quote_surround_stack.pop();
+            }
+            if c == '\\' && in_quote && raw_quote_surround_stack.is_empty() {
+                escaped = !escaped;
+            } else {
+                escaped = false;
+            }
+            let is_line_breaker = c == '\n' || c == '\r';
+            if in_quote || !is_line_breaker {
+                c
+            } else {
+                ' '
+            }
+        })
+        .collect()
 }
